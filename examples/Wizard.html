@@ -1,0 +1,227 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <title>Smart Wizard - a JavaScript jQuery Step Wizard plugin</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Include SmartWizard CSS -->
+    <link href="css/smart_wizard.css" rel="stylesheet" type="text/css" />
+
+    <!-- Optional SmartWizard theme -->
+    <!--<link href="../dist/css/smart_wizard_theme_circles.css" rel="stylesheet" type="text/css" />-->
+    <!--<link href="../dist/css/smart_wizard_theme_dots.css" rel="stylesheet" type="text/css" />-->
+    <!--<link href="../dist/css/smart_wizard_theme.css" rel="stylesheet" type="text/css" />-->
+    <link href="css/smart_wizard_theme.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+    <div class="container">
+        <br />
+        <form action="#" id="myForm" role="form" data-toggle="validator" method="post" accept-charset="utf-8">
+
+            <!-- SmartWizard html -->
+            <div id="smartwizard" dir="rtl" class="sw-main sw-theme-arrows">
+                <ul>
+                    <li><a href="#step-1">الخطوة 1<br /><small>رقم الجوال</small></a></li>
+                    <li><a href="#step-2">الخطوة 2<br /><small>موقع الزبون</small></a></li>
+                    <li><a href="#step-3">الخطوة 3<br /><small>اختيار المطعم</small></a></li>
+                    <li><a href="#step-4">الخطوة 4<br /><small>اختيار الأصناف</small></a></li>
+                </ul>
+
+                <div>
+                    <div id="step-1">
+                        <h2>Your Email Address</h2>
+                        <div id="form-step-0" role="form" data-toggle="validator">
+                            <div class="form-group">
+                                <label for="email">Email address:</label>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="Write your email address" required>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="step-2">
+                        <h2>Your Name</h2>
+                        <div id="form-step-1" role="form" data-toggle="validator">
+                            <div class="form-group">
+                                <label for="name">Name:</label>
+                                <input type="text" class="form-control" name="name" id="email" placeholder="Write your name" required>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="step-3">
+                        <h2>Your Address</h2>
+                        <div id="form-step-2" role="form" data-toggle="validator">
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <textarea class="form-control" name="address" id="address" rows="3" placeholder="Write your address..." required></textarea>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="step-4" class="">
+                        <h2>Terms and Conditions</h2>
+                        <p>
+                            Terms and conditions: Keep your smile :)
+                        </p>
+                        <div id="form-step-3" role="form" data-toggle="validator">
+                            <div class="form-group">
+                                <label for="terms">I agree with the T&C</label>
+                                <input type="checkbox" id="terms" data-error="Please accept the Terms and Conditions" required>
+                                <div class="help-block with-errors"></div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+          
+            <div style="color:red" id="errDiv"></div>
+        </form>
+
+    </div>
+
+    <!-- Include jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include jQuery Validator plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.5/validator.min.js"></script>
+
+
+    <!-- Include SmartWizard JavaScript source -->
+    <script type="text/javascript" src="js/jquery.smartWizard.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Toolbar extra buttons
+            var btnBlank = $('<b> </b>');
+            var btnFinish = $('<button></button>')
+                .addClass('btn btn-info')
+                .text('تأكيد الطلب')
+                .on('click', function () {
+                    $('#errDiv').text('');
+                    if (!$(this).hasClass('disabled')) {
+                        var elmForm = $("#myForm");
+                        if (elmForm) {
+                            elmForm.validator('validate');
+                            var elmErr = elmForm.find('.has-error');
+                            if (elmErr && elmErr.length > 0) {
+                                //alert('Oops we still have error in the form');
+                                $('#errDiv').text('Oops we still have error in the form');
+                                return false;
+                            } else {
+                                $('#errDiv').text('');
+                                alert('Great! we are ready to submit form');
+                                elmForm.submit();
+                                return false;
+                            }
+                        }
+                    }
+                });
+
+            var btnCancel = $('<button></button>')
+                .text('إلغاء الأمر')
+                .addClass('btn btn-danger')
+                .on('click', function () {
+                    $('#errDiv').text('');
+                    $('#smartwizard').smartWizard("reset");
+                    $('#myForm').find("input, textarea").val("");
+                });
+
+
+            //// External Button Events
+            //$("#reset-btn").on("click", function () {
+            //    // Reset wizard
+            //    $('#smartwizard').smartWizard("reset");
+            //    return true;
+            //});
+
+            var btnBack = $('<button></button>')
+                .text("الخطوة السابقة")
+                .addClass("btn btn-secondary")
+                .on("click", function () {
+                // Navigate previous
+                $('#smartwizard').smartWizard("prev");
+                return true;
+            });
+
+             var btnNext = $('<button></button>')
+                .text("الخطوة التالية")
+                 .addClass("btn btn-success")
+                 .on("click", function () {
+                // Navigate next
+                $('#smartwizard').smartWizard("next");
+                return true;
+            });
+
+            // Step show event
+            $("#smartwizard").on("showStep", function (e, anchorObject, stepNumber, stepDirection, stepPosition) {
+                //alert("You are on step "+stepNumber+" now");
+                if (stepPosition === 'first') {
+                    $(btnBack).addClass('disabled');
+                } else if (stepPosition === 'final') {
+                    $(btnNext).addClass('disabled');
+                } else {
+                    $(btnBack).removeClass('disabled');
+                    $(btnNext).removeClass('disabled');
+                }
+            });
+
+
+
+
+
+
+
+
+            // Smart Wizard
+            $('#smartwizard').smartWizard({
+                selected: 0,
+                theme: 'dots',
+                transitionEffect: 'fade',
+                toolbarSettings: {
+                    toolbarPosition: 'bottom',
+                    toolbarExtraButtons: [btnFinish,btnBlank, btnCancel,btnBlank, btnBack, btnNext]
+                },
+                anchorSettings: {
+                    markDoneStep: true, // add done css
+                    markAllPreviousStepsAsDone: true, // When a step selected by url hash, all previous steps are marked done
+                    removeDoneStepOnNavigateBack: true, // While navigate back done step after active step will be cleared
+                    enableAnchorOnDoneStep: true, // Enable/Disable the done steps navigation
+                    //enableAllAnchors: true
+                }
+            });
+
+            $("#smartwizard").on("leaveStep", function (e, anchorObject, stepNumber, stepDirection) {
+                var elmForm = $("#form-step-" + stepNumber);
+                // stepDirection === 'forward' :- this condition allows to do the form validation
+                // only on forward navigation, that makes easy navigation on backwards still do the validation when going next
+                if (stepDirection === 'forward' && elmForm) {
+                    elmForm.validator('validate');
+                    var elmErr = elmForm.children('.has-error');
+                    if (elmErr && elmErr.length > 0) {
+                        // Form validation failed
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            $("#smartwizard").on("showStep", function (e, anchorObject, stepNumber, stepDirection) {
+                // Enable finish button only on last step
+                if (stepNumber == 3) {
+                    $('.btn-finish').removeClass('disabled');
+                } else {
+                    $('.btn-finish').addClass('disabled');
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
